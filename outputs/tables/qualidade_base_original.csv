@@ -1,0 +1,20 @@
+coluna,Tipo,Nulos (NaN),% Nulos,nao_identificado,% nao_identificado,Valores Únicos
+id,int64,0,0.0,0,0.0,5164
+campanha,int64,0,0.0,0,0.0,482
+ano,int64,0,0.0,0,0.0,6
+periodo,int64,0,0.0,0,0.0,5
+mes,str,0,0.0,0,0.0,12
+data_dt,str,0,0.0,0,0.0,483
+dia_da_sem,str,0,0.0,0,0.0,6
+silvestre_,str,0,0.0,0,0.0,2
+classe,str,0,0.0,1,0.02,5
+ordem,str,0,0.0,172,3.33,34
+familia,str,0,0.0,843,16.32,72
+especie_nm,str,0,0.0,1003,19.42,192
+nome_popul,str,0,0.0,79,1.53,176
+uc,str,0,0.0,2,0.04,4
+x,int64,0,0.0,0,0.0,4556
+y,int64,0,0.0,0,0.0,3858
+posicao,str,0,0.0,2708,52.44,11
+hora,str,0,0.0,1945,37.66,476
+sexo,str,0,0.0,4993,96.69,4

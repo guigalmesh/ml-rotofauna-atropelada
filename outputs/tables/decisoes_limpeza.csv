@@ -1,0 +1,11 @@
+etapa,linhas_antes,linhas_depois,motivo
+carregar_raw,10328,10328,CSV original
+remover_duplicatas,10328,5164,Base veio duplicada do ArcGIS: cada linha aparecia exatamente 2 vezes; removida a coluna OBJECTID e as cópias
+padronizar_strings,5164,5164,Texto em minúsculas e sem espaços nas bordas
+recalcular_dia_da_sem,5164,5164,"dia_da_sem recalculado de data_dt: 43 divergências corrigidas (35 na fauna silvestre), incluindo valores inválidos como eg_"
+filtrar_silvestres,5164,4422,Mantida só a fauna silvestre (742 registros domésticos removidos)
+remover_registros_repetidos,4422,4400,"22 registros idênticos a outro em todas as colunas exceto id (mesma campanha, data, espécie, ponto, hora, sexo e posição), em geral com ids consecutivos: provável digitação dupla. Ex.: ids removidos 111, 261, 570, 691, 695"
+remover_classe_nao_identificada,4400,4399,Registro sem classe (alvo do multiclasse)
+imputar_uc,4399,4399,"2 registros com uc = nao_identificado receberam a UC do vizinho mais próximo: (195856, 8236349) → jbb_fal_ibge a 10 m; (183402, 8231169) → jbb_fal_ibge a 0 m"
+corrigir_uc_incoerente,4399,4399,"16 registros com UC que contradiz os 10 vizinhos mais próximos (nenhum com a mesma UC, todos de outra) receberam a UC dos vizinhos: esecae → jbb_fal_ibge: 1; jbb_fal_ibge → pnb: 8; pnb → jbb_fal_ibge: 7"
+selecionar_colunas,4399,4399,data_dt convertida em data; descartadas as colunas proibidas como preditores (campanha e especie_nm mantidas só como auxiliares)

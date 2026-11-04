@@ -1,0 +1,14 @@
+# torch CPU: pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu
+geopandas==1.2.0
+matplotlib==3.11.2
+numpy==2.4.6
+optuna==5.0.0
+osmnx==2.1.1
+pandas==3.0.6
+pyproj==3.7.2
+rasterio==1.4.4
+requests==2.34.2
+scikit-learn==1.9.1
+seaborn==0.13.2
+shapely==2.2.0
+torch==2.15.0+cpu

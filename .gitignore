@@ -1,0 +1,35 @@
+# Ambiente e cache do Python
+venv/
+__pycache__/
+*.pyc
+
+# Material de referência (fica só local)
+specs/
+
+# Dados gerados pelos scripts (reproduzíveis com o README)
+data/interim/*
+data/processed/*
+data/external/processed/*
+!data/**/.gitkeep
+
+# Dados externos que os scripts baixam sozinhos
+data/external/raw/osm/
+data/external/raw/srtm/
+data/external/raw/nasa_power/
+
+# Modelos e estudos do Optuna (grandes e reproduzíveis)
+outputs/models/*
+!outputs/models/.gitkeep
+outputs/*.db
+
+# Editores e sistema
+.vscode/
+.idea/
+.DS_Store
+
+# Cache do osmnx fora do lugar (o certo é data/external/raw/osm/cache)
+/cache/
+
+# Notas de trabalho (ficam só local)
+JOURNAL.md
+Plano do pipeline RodoFauna.md

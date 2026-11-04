@@ -1,0 +1,4 @@
+hipotese,epsg,dist_mediana_m,dist_p90_m,pct_ate_20m
+SIRGAS 2000 / UTM 23S,EPSG:31983,7.1,67.9,68.6
+SAD69 / UTM 23S,EPSG:29193,29.9,75.6,37.8
+WGS 84 / UTM 23S,EPSG:32723,7.1,67.9,68.6
