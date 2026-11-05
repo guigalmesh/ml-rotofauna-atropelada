@@ -17,6 +17,7 @@ Os três problemas planejados são:
 | Limpeza raw → interim (`01a_limpeza`) | ✅ pronta |
 | Análise exploratória das ocorrências (`01b_eda`) | ✅ pronta |
 | Dados externos e segmentação das rodovias (`01c_external`) | ✅ pronta |
+| EDA de revisão: esforço, zeros, classes, sazonalidade e blocos (`01d_eda_revisao`) | ✅ pronta |
 | Datasets de modelagem (`02_build_datasets`) | ⏳ a fazer |
 | Modelos: multiclasse, binário e regressão | ⏳ a fazer |
 | Otimização de hiperparâmetros e estudo de regularização | ⏳ a fazer |
@@ -36,6 +37,7 @@ Rode os scripts da raiz do projeto, como módulos e nesta ordem:
 venv/bin/python -m experiments.01a_limpeza    # raw → data/interim/silvestres_limpo.csv
 venv/bin/python -m experiments.01b_eda        # figuras e tabelas da EDA
 venv/bin/python -m experiments.01c_external   # dados externos; precisa de internet
+venv/bin/python -m experiments.01d_eda_revisao # EDA de esforço, zeros, classes, sazonalidade e blocos
 ```
 
 - **Dados baixados automaticamente:** na primeira execução, o `01c_external` baixa OSM, NASA POWER e SRTM e guarda tudo em cache em `data/external/raw/`.
@@ -56,7 +58,7 @@ venv/bin/python -m experiments.01c_external   # dados externos; precisa de inter
 ```
 data/
   original/       CSV original do RodoFauna, nunca alterado
-  interim/        silvestres_limpo.csv (1 linha por ocorrência)
+  interim/        silvestres_limpo.csv (1 linha por ocorrência) e campanhas.csv (esforço por campanha)
   processed/      datasets de modelagem (a criar)
   external/       raw/ e processed/ dos dados externos
 src/              config, preprocessing, external

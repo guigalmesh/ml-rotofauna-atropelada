@@ -156,12 +156,30 @@ def select_interim_columns(df: pd.DataFrame) -> pd.DataFrame:
     return df[INTERIM_COLUMNS]
 
 
-def build_interim(raw_path) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+def build_campaign_table(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Uma linha por campanha (esforço de campo), a partir da base sem duplicatas
+    com silvestres e domésticos: o esforço independe do tipo de animal, e uma
+    campanha só com domésticos ainda é um percurso feito. Campanha sem nenhum
+    registro não aparece na base e por isso não entra aqui.
+    """
+    datas = pd.to_datetime(df['data_dt'], format=DATE_FORMAT)
+    tabela = (df.assign(data=datas, silvestre=df['silvestre_'] == 'silvestre')
+                .groupby('campanha')
+                .agg(data=('data', 'min'), n_datas=('data', 'nunique'),
+                     n_registros=('data', 'size'), n_silvestres=('silvestre', 'sum'))
+                .reset_index())
+    tabela['mes'] = tabela['data'].dt.to_period('M').astype(str)
+    return tabela
+
+
+def build_interim(raw_path) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """
     Executa a limpeza raw → interim e devolve a base limpa, a tabela de
-    decisões (etapa, linhas antes, linhas depois e motivo) e a tabela de
+    decisões (etapa, linhas antes, linhas depois e motivo), a tabela de
     qualidade da base original sem duplicatas (todas as colunas, silvestres
-    e domésticos), que a EDA usa por não ler o raw.
+    e domésticos), que a EDA usa por não ler o raw, e a tabela de campanhas
+    (esforço de campo por campanha).
     """
     decisoes = []
 
@@ -181,6 +199,7 @@ def build_interim(raw_path) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     df = standardize_strings(df)
     registrar('padronizar_strings', len(df), len(df), 'Texto em minúsculas e sem espaços nas bordas')
     qualidade = generate_quality_table(df)
+    campanhas = build_campaign_table(df)
 
     divergente = weekday_from_date(df) != df['dia_da_sem']
     n_div_silv = (divergente & (df['silvestre_'] == 'silvestre')).sum()
@@ -223,4 +242,4 @@ def build_interim(raw_path) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
               'data_dt convertida em data; descartadas as colunas proibidas como preditores '
               '(campanha e especie_nm mantidas só como auxiliares)')
 
-    return df, pd.DataFrame(decisoes), qualidade
+    return df, pd.DataFrame(decisoes), qualidade, campanhas

@@ -8,6 +8,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / 'data'
 RAW_CSV = DATA_DIR / 'original' / 'rodofauna_original.csv'
 INTERIM_CSV = DATA_DIR / 'interim' / 'silvestres_limpo.csv'
+CAMPANHAS_CSV = DATA_DIR / 'interim' / 'campanhas.csv'
 OCORRENCIAS_CSV = DATA_DIR / 'processed' / 'ocorrencias.csv'
 SEGMENTOS_CSV = DATA_DIR / 'processed' / 'segmentos_periodo.csv'
 EXTERNAL_RAW_DIR = DATA_DIR / 'external' / 'raw'
