@@ -34,8 +34,12 @@ CRS = 'EPSG:31983'
 SEGMENT_SIZE_M = 500
 AGG_PERIOD = 'M'
 
-# Splits
-SPATIAL_BLOCK_M = 3000
+# Splits. Bloco espacial = trecho contínuo de ~5 km ao longo da rodovia (a
+# correlação entre segmentos some por volta de 5 km); em cada rodada, os
+# segmentos de treino a até SPATIAL_BUFFER_M do bloco de validação saem do treino
+SPATIAL_BLOCK_M = 5000
+SPATIAL_BUFFER_M = 1000
+SPATIAL_N_FOLDS = 5
 TEMPORAL_SPLIT_LAST_TRAIN_YEAR = 2013
 
 # =============================================================================

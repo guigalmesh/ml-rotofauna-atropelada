@@ -15,6 +15,9 @@ OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 sns.set_theme(style='whitegrid')
 
 UCS = ['esecae', 'pnb', 'jbb_fal_ibge']
+# Grade da proposta inicial de blocos, avaliada aqui como diagnóstico; os blocos
+# adotados são trechos ao longo da via (config.SPATIAL_BLOCK_M), criados nos splits
+GRADE_DIAGNOSTICO_M = 3000
 MESES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez']
 
 
@@ -240,10 +243,10 @@ def run_review_eda():
     # 6. BLOCOS ESPACIAIS
     # =========================================================================
     print("\n" + "=" * 75)
-    print(f"6. BLOCOS ESPACIAIS DE {config.SPATIAL_BLOCK_M / 1000:.0f} KM")
+    print(f"6. BLOCOS ESPACIAIS DE {GRADE_DIAGNOSTICO_M / 1000:.0f} KM")
     print("=" * 75)
-    bloco = (segmentos['x_centro'] // config.SPATIAL_BLOCK_M).astype(int).astype(str) + '_' + \
-            (segmentos['y_centro'] // config.SPATIAL_BLOCK_M).astype(int).astype(str)
+    bloco = (segmentos['x_centro'] // GRADE_DIAGNOSTICO_M).astype(int).astype(str) + '_' + \
+            (segmentos['y_centro'] // GRADE_DIAGNOSTICO_M).astype(int).astype(str)
     segmentos = segmentos.assign(bloco=bloco)
     por_bloco = segmentos.groupby('bloco').size()
     print(f"Blocos com segmento: {len(por_bloco)}; segmentos por bloco: "
@@ -264,11 +267,11 @@ def run_review_eda():
     segmentos.plot(color=[plt.cm.tab20(c % 20) for c in codigo], lw=2.5, ax=axes[0])
     x0, x1 = axes[0].get_xlim()
     y0, y1 = axes[0].get_ylim()
-    for gx in np.arange(x0 // config.SPATIAL_BLOCK_M * config.SPATIAL_BLOCK_M, x1, config.SPATIAL_BLOCK_M):
+    for gx in np.arange(x0 // GRADE_DIAGNOSTICO_M * GRADE_DIAGNOSTICO_M, x1, GRADE_DIAGNOSTICO_M):
         axes[0].axvline(gx, color='lightgray', lw=0.5)
-    for gy in np.arange(y0 // config.SPATIAL_BLOCK_M * config.SPATIAL_BLOCK_M, y1, config.SPATIAL_BLOCK_M):
+    for gy in np.arange(y0 // GRADE_DIAGNOSTICO_M * GRADE_DIAGNOSTICO_M, y1, GRADE_DIAGNOSTICO_M):
         axes[0].axhline(gy, color='lightgray', lw=0.5)
-    axes[0].set_title(f'Segmentos Coloridos pelo Bloco de {config.SPATIAL_BLOCK_M / 1000:.0f} km')
+    axes[0].set_title(f'Segmentos Coloridos pelo Bloco de {GRADE_DIAGNOSTICO_M / 1000:.0f} km')
     axes[0].set_xlabel('X (UTM)')
     axes[0].set_ylabel('Y (UTM)')
     sns.countplot(x=por_bloco.values, color='steelblue', ax=axes[1])
