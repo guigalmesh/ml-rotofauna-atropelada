@@ -132,19 +132,21 @@ def spatial_cv_splits(segmento_id: pd.Series, fold_espacial: pd.Series, segmento
                       dist: np.ndarray, buffer_m: float):
     """
     Gera (treino, validação) como máscaras booleanas sobre as linhas, uma
-    rodada por fold. As linhas do fold k validam; das demais, saem do treino
-    as que estão em segmentos a <= buffer_m de qualquer segmento do fold k.
+    rodada por fold presente nas linhas. As linhas do fold k validam; das
+    demais, saem do treino as que estão em segmentos a <= buffer_m de qualquer
+    segmento do fold k. Funciona com qualquer subconjunto de linhas (por
+    exemplo, só o treino temporal, ou ocorrências que não cobrem todos os
+    segmentos): o fold de cada segmento vem das próprias linhas.
     """
     pos = pd.Series(np.arange(len(segmentos)), index=segmentos['segmento_id'].values)
-    linha_seg = pos.reindex(segmento_id.values).values
-    seg_fold = fold_espacial.groupby(segmento_id).first()
-    seg_fold = seg_fold.reindex(segmentos['segmento_id'].values).values
-    for k in np.sort(np.unique(seg_fold)):
-        val_segs = np.where(seg_fold == k)[0]
+    seg_id = np.asarray(segmento_id)
+    fold = np.asarray(fold_espacial)
+    linha_seg = pos.reindex(seg_id).values
+    for k in np.sort(np.unique(fold)):
+        val = fold == k
+        val_segs = np.unique(linha_seg[val])
         perto = dist[:, val_segs].min(axis=1) <= buffer_m
-        excluido = perto & (seg_fold != k)
-        val = fold_espacial.values == k
-        treino = ~val & ~excluido[linha_seg]
+        treino = ~val & ~perto[linha_seg]
         yield treino, val
 
 
