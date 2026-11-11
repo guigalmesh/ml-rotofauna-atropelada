@@ -260,6 +260,7 @@ def combine_climate(nasa: pd.DataFrame, inmet: pd.DataFrame, min_coverage: float
     clima['fonte_clima'] = np.where(usa_inmet, 'inmet_a001', 'nasa_power')
     clima = clima.sort_values('ano_mes').reset_index(drop=True)
     clima['precipitacao_mes_anterior_mm'] = clima['precipitacao_mm'].shift(1)
+    clima['temperatura_mes_anterior_c'] = clima['temperatura_c'].shift(1)
     return clima
 
 

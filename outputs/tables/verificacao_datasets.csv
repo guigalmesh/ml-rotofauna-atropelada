@@ -1,0 +1,25 @@
+verificacao,ok,detalhe
+todas as ocorrências têm segmento,True,0 sem segmento a <= 200 m
+cada bloco está num único fold,True,
+todos os folds espaciais têm blocos,True,
+ocorrencias: nenhuma coluna proibida,True,set()
+ocorrencias: esquema igual ao esperado,True,
+ocorrencias: alvo sem ausentes,True,
+ocorrencias: splits sem ausentes,True,
+segmentos_periodo: nenhuma coluna proibida,True,set()
+segmentos_periodo: esquema igual ao esperado,True,
+segmentos_periodo: alvo sem ausentes,True,
+segmentos_periodo: splits sem ausentes,True,
+soma de n igual ao total de ocorrências,True,4399 vs 4399
+painel completo e sem duplicatas,True,
+todos os meses têm campanha,True,
+lags usam só meses anteriores (amostra de 200 linhas),True,
+lag de 12 meses ausente no primeiro ano,True,
+"chuva no painel é a do mês anterior, não a do mês",True,
+vegetação do painel vem do ano anterior,True,
+split temporal: treino até o ano de corte,True,
+ocorrência herda o bloco do seu segmento,True,
+com a faixa de exclusão nenhum segmento de validação encosta no treino,True,
+categóricas cruas,True,
+coordenadas em metros UTM (não escaladas),True,
+clima do mês anterior sem ausentes,True,

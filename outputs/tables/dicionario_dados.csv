@@ -1,0 +1,58 @@
+arquivo,coluna,papel,descricao
+ocorrencias.csv,data,meta,data da ocorrência
+ocorrencias.csv,ano,meta,ano; não é atributo (o teste tem anos inéditos)
+ocorrencias.csv,segmento_id,meta,segmento de ~500 m da malha do OSM atribuído (até 200 m)
+ocorrencias.csv,classe,alvo,classe taxonômica (multiclasse)
+ocorrencias.csv,bloco_espacial,split,trecho contínuo de ~5 km ao longo da via
+ocorrencias.csv,fold_espacial,split,"fold do bloco (0–4), equilibrado por ocorrências"
+ocorrencias.csv,fold_aleatorio,split,fold sorteado por linha; só referência otimista
+ocorrencias.csv,split_temporal,split,"treino <= 2013, teste depois; teste final"
+ocorrencias.csv,x,atributo:base,"UTM E (m), SIRGAS 2000 / 23S; no painel, centro do segmento"
+ocorrencias.csv,y,atributo:base,UTM N (m)
+ocorrencias.csv,x_mais_y,atributo:base,coordenada rotacionada 45°
+ocorrencias.csv,x_menos_y,atributo:base,coordenada rotacionada 45°
+ocorrencias.csv,uc,atributo:base,unidade de conservação (categórica crua)
+ocorrencias.csv,mes_sin,atributo:base,seno do mês
+ocorrencias.csv,mes_cos,atributo:base,cosseno do mês
+ocorrencias.csv,seco,atributo:base,1 = maio a setembro
+ocorrencias.csv,prec_mes_anterior_mm,atributo:clima,precipitação do mês anterior (INMET A001)
+ocorrencias.csv,temp_mes_anterior_c,atributo:clima,temperatura média do mês anterior (INMET A001)
+ocorrencias.csv,tipo_via,atributo:via,"classe da via no OSM (trunk, primary, secondary, tertiary); malha atual"
+ocorrencias.csv,velocidade_max,atributo:via,velocidade máxima no OSM (km/h); ausente em parte das vias
+ocorrencias.csv,faixas,atributo:via,número de faixas no OSM; ausente em parte das vias
+ocorrencias.csv,elevacao_m,atributo:relevo_agua,elevação SRTM (m)
+ocorrencias.csv,dist_agua_m,atributo:relevo_agua,distância ao rio ou corpo d'água mais próximo no OSM (m)
+ocorrencias.csv,veg_nativa_pct,atributo:vegetacao,"% de vegetação nativa (MapBiomas) num raio de 500 m, no ano anterior"
+ocorrencias.csv,dia_ano_sin,atributo:base,seno do dia do ano
+ocorrencias.csv,dia_ano_cos,atributo:base,cosseno do dia do ano
+segmentos_periodo.csv,segmento_id,meta,segmento de ~500 m da malha do OSM atribuído (até 200 m)
+segmentos_periodo.csv,ano_mes,meta,mês do painel
+segmentos_periodo.csv,ano,meta,ano; não é atributo (o teste tem anos inéditos)
+segmentos_periodo.csv,mes,meta,mês 1–12 (redundante com mes_sin/cos)
+segmentos_periodo.csv,n_campanhas,meta,"campanhas no mês; só informativo, nunca atributo (deriva de campanha)"
+segmentos_periodo.csv,n,alvo,atropelamentos silvestres no segmento no mês
+segmentos_periodo.csv,bloco_espacial,split,trecho contínuo de ~5 km ao longo da via
+segmentos_periodo.csv,fold_espacial,split,"fold do bloco (0–4), equilibrado por ocorrências"
+segmentos_periodo.csv,fold_aleatorio,split,fold sorteado por linha; só referência otimista
+segmentos_periodo.csv,split_temporal,split,"treino <= 2013, teste depois; teste final"
+segmentos_periodo.csv,x,atributo:base,"UTM E (m), SIRGAS 2000 / 23S; no painel, centro do segmento"
+segmentos_periodo.csv,y,atributo:base,UTM N (m)
+segmentos_periodo.csv,x_mais_y,atributo:base,coordenada rotacionada 45°
+segmentos_periodo.csv,x_menos_y,atributo:base,coordenada rotacionada 45°
+segmentos_periodo.csv,uc,atributo:base,unidade de conservação (categórica crua)
+segmentos_periodo.csv,mes_sin,atributo:base,seno do mês
+segmentos_periodo.csv,mes_cos,atributo:base,cosseno do mês
+segmentos_periodo.csv,seco,atributo:base,1 = maio a setembro
+segmentos_periodo.csv,prec_mes_anterior_mm,atributo:clima,precipitação do mês anterior (INMET A001)
+segmentos_periodo.csv,temp_mes_anterior_c,atributo:clima,temperatura média do mês anterior (INMET A001)
+segmentos_periodo.csv,tipo_via,atributo:via,"classe da via no OSM (trunk, primary, secondary, tertiary); malha atual"
+segmentos_periodo.csv,velocidade_max,atributo:via,velocidade máxima no OSM (km/h); ausente em parte das vias
+segmentos_periodo.csv,faixas,atributo:via,número de faixas no OSM; ausente em parte das vias
+segmentos_periodo.csv,elevacao_m,atributo:relevo_agua,elevação SRTM (m)
+segmentos_periodo.csv,dist_agua_m,atributo:relevo_agua,distância ao rio ou corpo d'água mais próximo no OSM (m)
+segmentos_periodo.csv,veg_nativa_pct,atributo:vegetacao,"% de vegetação nativa (MapBiomas) num raio de 500 m, no ano anterior"
+segmentos_periodo.csv,n_lag_1,atributo:historico,n do mês anterior no mesmo segmento
+segmentos_periodo.csv,n_media_12m,atributo:historico,média de n nos 12 meses anteriores (com o que houver)
+segmentos_periodo.csv,n_mesmo_mes_ano_anterior,atributo:historico,n do mesmo mês do ano anterior (ausente no primeiro ano)
+segmentos_periodo.csv,meses_historico,atributo:historico,meses de histórico disponíveis
+segmentos_periodo.csv,comprimento_m,atributo:via,comprimento do segmento (m)

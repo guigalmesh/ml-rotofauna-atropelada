@@ -86,3 +86,38 @@ REDUNDANT_COLUMNS = ['mes']
 AUX_COLUMNS = ['especie_nm', 'campanha']
 
 INTERIM_COLUMNS = ['data', 'ano', 'classe', 'especie_nm', 'uc', 'x', 'y', 'campanha', 'dia_da_sem']
+
+# =============================================================================
+# ATRIBUTOS DOS DATASETS PROCESSADOS (Etapa 4)
+# =============================================================================
+# Regra: nenhum atributo usa informação posterior ao que se prevê. Clima entra
+# com o mês anterior; a cobertura do solo (anual) entra com o ano anterior
+# (2010 usa o próprio ano: não há banda de 2009); os lags usam só o passado.
+VEG_YEAR_LAG = 1
+
+# Grupos de atributos, usados na ablação da Etapa 5. 'historico' usa o alvo
+# passado do próprio segmento e por isso fica fora do split espacial
+FEATURE_GROUPS = {
+    'base': ['x', 'y', 'x_mais_y', 'x_menos_y', 'uc', 'mes_sin', 'mes_cos', 'seco'],
+    'clima': ['prec_mes_anterior_mm', 'temp_mes_anterior_c'],
+    'via': ['tipo_via', 'velocidade_max', 'faixas'],
+    'relevo_agua': ['elevacao_m', 'dist_agua_m'],
+    'vegetacao': ['veg_nativa_pct'],
+    'historico': ['n_lag_1', 'n_media_12m', 'n_mesmo_mes_ano_anterior', 'meses_historico'],
+}
+# Só nas ocorrências (a data exata é conhecida)
+OCCURRENCE_EXTRA_FEATURES = ['dia_ano_sin', 'dia_ano_cos']
+# Só no painel (tamanho do segmento)
+PANEL_EXTRA_FEATURES = ['comprimento_m']
+CATEGORICAL_FEATURES = ['uc', 'tipo_via']
+
+# Colunas que não são atributos: alvos, identificadores e splits
+TARGET_COLUMNS = {'ocorrencias': 'classe', 'segmentos_periodo': 'n'}
+SPLIT_COLUMNS = ['bloco_espacial', 'fold_espacial', 'fold_aleatorio', 'split_temporal']
+META_COLUMNS = {
+    'ocorrencias': ['data', 'ano', 'segmento_id'],
+    'segmentos_periodo': ['segmento_id', 'ano_mes', 'ano', 'mes', 'n_campanhas'],
+}
+# Colunas que nunca podem aparecer nos arquivos processados: as proibidas pela
+# especificação e as que entregariam o alvo (especie_nm define a classe)
+FORBIDDEN_IN_PROCESSED = PROHIBITED_FEATURES + ['especie_nm', 'dia_da_sem', 'mes_num']
