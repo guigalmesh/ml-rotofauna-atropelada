@@ -282,7 +282,45 @@ def run_review_eda():
     plt.savefig(OUTPUT_DIR / '14_blocos_espaciais.png', dpi=300)
     plt.close()
 
-    print(f"\n[OK] Gráficos 08–14 salvos em: {OUTPUT_DIR.relative_to(config.ROOT)}/")
+    # =========================================================================
+    # 7. ALVOS DO BINÁRIO E DA REGRESSÃO (Etapa 3, parte dos alvos)
+    # =========================================================================
+    print("\n" + "=" * 75)
+    print("7. ALVOS: HOTSPOT E n POR SEGMENTO")
+    print("=" * 75)
+    painel['cal'] = painel['mes'].str[5:].astype(int)
+    painel['estacao'] = np.where(painel['cal'].between(5, 9), 'seca', 'chuvosa')
+    linhas = []
+    for limiar in [config.HOTSPOT_MIN_N, config.HOTSPOT_MIN_N_SENSITIVITY]:
+        pos = painel['n'] >= limiar
+        for conjunto, mask in [('treino', painel['treino']), ('teste', ~painel['treino'])]:
+            for est in ['chuvosa', 'seca', 'todas']:
+                m = mask if est == 'todas' else mask & (painel['estacao'] == est)
+                linhas.append({'criterio': f'n >= {limiar}', 'conjunto': conjunto, 'estacao': est,
+                               'pct_positivos': round(pos[m].mean() * 100, 1)})
+    hotspot = pd.DataFrame(linhas)
+    hotspot.to_csv(config.TABLES_DIR / 'proporcao_hotspot.csv', index=False)
+    print(hotspot.pivot(index=['criterio', 'conjunto'], columns='estacao', values='pct_positivos'))
+    total_seg = painel.groupby('segmento_id')['n'].sum()
+    segmentos = segmentos.merge(total_seg.rename('n_total'), left_on='segmento_id', right_index=True)
+
+    # Gráfico 15: % de positivos por critério e estação, e mapa dos segmentos pela contagem total
+    fig, axes = plt.subplots(1, 2, figsize=(15, 6), gridspec_kw={'width_ratios': [1, 1.6]})
+    barras = hotspot[(hotspot['conjunto'] == 'treino') & (hotspot['estacao'] != 'todas')]
+    sns.barplot(data=barras, x='criterio', y='pct_positivos', hue='estacao', palette=['steelblue', 'khaki'], ax=axes[0])
+    axes[0].set_title('% de Segmento × Mês Positivos no Treino')
+    axes[0].set_ylabel('% positivos')
+    axes[0].set_xlabel('')
+    segmentos.plot(column='n_total', cmap='YlOrRd', lw=3, legend=True, ax=axes[1],
+                   legend_kwds={'label': 'atropelamentos (2010–2015)', 'shrink': 0.7})
+    axes[1].set_title('Atropelamentos Silvestres por Segmento de 500 m')
+    axes[1].set_xlabel('X (UTM)')
+    axes[1].set_ylabel('Y (UTM)')
+    plt.tight_layout()
+    plt.savefig(OUTPUT_DIR / '15_hotspot_e_mapa_segmentos.png', dpi=300)
+    plt.close()
+
+    print(f"\n[OK] Gráficos 08–15 salvos em: {OUTPUT_DIR.relative_to(config.ROOT)}/")
 
 
 if __name__ == '__main__':

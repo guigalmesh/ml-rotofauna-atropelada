@@ -1,0 +1,13 @@
+criterio,conjunto,estacao,pct_positivos
+n >= 1,treino,chuvosa,26.8
+n >= 1,treino,seca,12.1
+n >= 1,treino,todas,20.3
+n >= 1,teste,chuvosa,24.1
+n >= 1,teste,seca,9.1
+n >= 1,teste,todas,19.1
+n >= 2,treino,chuvosa,9.3
+n >= 2,treino,seca,2.2
+n >= 2,treino,todas,6.1
+n >= 2,teste,chuvosa,7.2
+n >= 2,teste,seca,1.1
+n >= 2,teste,todas,5.2

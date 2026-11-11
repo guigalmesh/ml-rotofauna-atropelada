@@ -30,9 +30,15 @@ SEED = 42
 # Sistema de coordenadas dos dados do IBRAM (SIRGAS 2000 / UTM 23S)
 CRS = 'EPSG:31983'
 
-# Provisórios: a unidade espacial e temporal é fechada na Etapa 2
+# Unidade de análise do binário e da regressão (Etapa 2): segmento de 500 m da
+# malha do OSM × mês. Alvo da regressão: n = atropelamentos no segmento no mês.
+# Hotspot: n >= HOTSPOT_MIN_N (com 80% de zeros, qualquer percentil do treino
+# cai em 0 ou 1, então o limiar é fixo e não precisa ser ajustado no treino);
+# n >= 2 entra só como análise de sensibilidade
 SEGMENT_SIZE_M = 500
 AGG_PERIOD = 'M'
+HOTSPOT_MIN_N = 1
+HOTSPOT_MIN_N_SENSITIVITY = 2
 
 # Splits. Bloco espacial = trecho contínuo de ~5 km ao longo da rodovia (a
 # correlação entre segmentos some por volta de 5 km); em cada rodada, os
