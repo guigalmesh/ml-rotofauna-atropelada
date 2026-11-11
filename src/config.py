@@ -121,3 +121,21 @@ META_COLUMNS = {
 # Colunas que nunca podem aparecer nos arquivos processados: as proibidas pela
 # especificação e as que entregariam o alvo (especie_nm define a classe)
 FORBIDDEN_IN_PROCESSED = PROHIBITED_FEATURES + ['especie_nm', 'dia_da_sem', 'mes_num']
+
+# =============================================================================
+# EXPERIMENTOS (Etapa 5 em diante)
+# =============================================================================
+MODEL_FIG_DIR = FIGURES_DIR / 'modelos'
+RESULTS_CSV = TABLES_DIR / 'resultados.csv'
+# Conjuntos de atributos da ablação dos dados externos. O grupo 'historico'
+# (lags do próprio segmento) é acrescentado só nos splits temporal e aleatório
+ABLATION_SETS = {
+    'base': ['base'],
+    'base+clima': ['base', 'clima'],
+    'base+via': ['base', 'via'],
+    'base+paisagem': ['base', 'relevo_agua', 'vegetacao'],
+    'completo': ['base', 'clima', 'via', 'relevo_agua', 'vegetacao'],
+}
+HISTORY_GROUP = 'historico'
+SPLITS = ['aleatorio', 'espacial', 'temporal']
+PERMUTATION_REPEATS = 10

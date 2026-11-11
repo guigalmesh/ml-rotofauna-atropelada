@@ -1,0 +1,26 @@
+conjunto_atributos,modelo,aleatorio,espacial,temporal
+base,estratificada,0.246 ± 0.009,0.240 ± 0.021,0.252
+base,hgb,0.402 ± 0.019,0.348 ± 0.035,0.341
+base,logistica,0.322 ± 0.024,0.303 ± 0.040,0.334
+base,majoritaria,0.201 ± 0.004,0.201 ± 0.014,0.207
+base,random_forest,0.386 ± 0.020,0.371 ± 0.050,0.350
+base+clima,estratificada,0.246 ± 0.009,0.240 ± 0.021,0.252
+base+clima,hgb,0.405 ± 0.021,0.358 ± 0.047,0.351
+base+clima,logistica,0.330 ± 0.016,0.315 ± 0.049,0.296
+base+clima,majoritaria,0.201 ± 0.004,0.201 ± 0.014,0.207
+base+clima,random_forest,0.383 ± 0.016,0.364 ± 0.048,0.342
+base+paisagem,estratificada,0.246 ± 0.009,0.240 ± 0.021,0.252
+base+paisagem,hgb,0.396 ± 0.015,0.323 ± 0.026,0.347
+base+paisagem,logistica,0.325 ± 0.027,0.313 ± 0.032,0.335
+base+paisagem,majoritaria,0.201 ± 0.004,0.201 ± 0.014,0.207
+base+paisagem,random_forest,0.384 ± 0.024,0.378 ± 0.038,0.350
+base+via,estratificada,0.246 ± 0.009,0.240 ± 0.021,0.252
+base+via,hgb,0.399 ± 0.021,0.350 ± 0.034,0.333
+base+via,logistica,0.333 ± 0.021,0.320 ± 0.031,0.340
+base+via,majoritaria,0.201 ± 0.004,0.201 ± 0.014,0.207
+base+via,random_forest,0.385 ± 0.015,0.372 ± 0.068,0.357
+completo,estratificada,0.246 ± 0.009,0.240 ± 0.021,0.252
+completo,hgb,0.403 ± 0.015,0.331 ± 0.025,0.336
+completo,logistica,0.348 ± 0.029,0.325 ± 0.034,0.314
+completo,majoritaria,0.201 ± 0.004,0.201 ± 0.014,0.207
+completo,random_forest,0.385 ± 0.022,0.382 ± 0.056,0.356

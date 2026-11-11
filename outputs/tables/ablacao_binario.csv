@@ -1,0 +1,10 @@
+modelo,split,base+clima,base+paisagem,base+via,completo
+hgb,aleatorio,-0.0005,-0.0002,-0.0008,0.0007
+hgb,espacial,0.0087,0.0306,0.0115,0.0211
+hgb,temporal,0.0044,0.0075,0.003,0.0093
+logistica,aleatorio,0.0026,0.0033,0.0111,0.0187
+logistica,espacial,0.0041,0.007,0.0298,0.0477
+logistica,temporal,-0.008,0.0029,0.0118,0.0094
+random_forest,aleatorio,-0.0018,-0.0012,0.0019,0.0027
+random_forest,espacial,0.0112,0.0259,-0.0031,0.0365
+random_forest,temporal,0.0001,-0.0015,0.0029,0.0047

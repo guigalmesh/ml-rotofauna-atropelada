@@ -1,0 +1,13 @@
+modelo,split,base+clima,base+paisagem,base+via,completo
+hgb,aleatorio,0.0017,0.0016,0.0049,0.001
+hgb,espacial,0.0137,0.0809,-0.0021,0.083
+hgb,temporal,0.007,-0.0025,-0.0098,0.017
+linear,aleatorio,-0.0009,0.0098,0.0068,0.0125
+linear,espacial,0.0076,0.0217,0.0439,0.023
+linear,temporal,-0.0156,-0.0017,0.0231,0.019
+poisson,aleatorio,0.0028,0.0085,0.03,0.0423
+poisson,espacial,0.0023,-0.0173,-0.0702,-0.1156
+poisson,temporal,-0.0077,0.0078,0.0114,0.0145
+random_forest,aleatorio,-0.0023,0.0055,0.0074,0.0094
+random_forest,espacial,0.0192,0.02,-0.0117,0.0436
+random_forest,temporal,0.0176,0.0045,0.0011,0.019

@@ -1,6 +1,6 @@
 # RodoFauna: predição de atropelamento de fauna
 
-> 🚧 **Projeto em desenvolvimento.** Por enquanto só a limpeza dos dados, a análise exploratória e a coleta de dados externos estão implementadas. Os datasets de modelagem, os modelos e a avaliação ainda não existem, e a estrutura, os scripts e os resultados podem mudar sem aviso.
+> 🚧 **Projeto em desenvolvimento.** Limpeza, EDA, dados externos, datasets de modelagem e os modelos clássicos estão implementados. A MLP, a otimização de hiperparâmetros e o estudo de regularização ainda não existem, e a estrutura, os scripts e os resultados podem mudar sem aviso.
 
 Pipeline de aprendizado de máquina para estudar atropelamentos de fauna silvestre em rodovias do Distrito Federal. Os registros de campo vêm do monitoramento RodoFauna (IBRAM) e são combinados com dados abertos de vias (OpenStreetMap), clima (INMET e NASA POWER), relevo (SRTM) e cobertura do solo (MapBiomas).
 
@@ -19,7 +19,8 @@ Os três problemas planejados são:
 | Dados externos e segmentação das rodovias (`01c_external`) | ✅ pronta |
 | EDA de revisão: esforço, zeros, sazonalidade, painel, blocos e alvos (`01d_eda_revisao`) | ✅ pronta |
 | Datasets de modelagem e splits (`02_build_datasets`) | ✅ pronta |
-| Modelos: multiclasse, binário e regressão | ⏳ a fazer |
+| Modelos de referência e clássicos nos três problemas, com ablação (`04`–`06`) | ✅ pronta |
+| MLP (PyTorch) nos três problemas | ⏳ a fazer |
 | Otimização de hiperparâmetros e estudo de regularização | ⏳ a fazer |
 
 ## Ambiente
@@ -39,6 +40,9 @@ venv/bin/python -m experiments.01b_eda        # figuras e tabelas da EDA
 venv/bin/python -m experiments.01c_external   # dados externos; precisa de internet
 venv/bin/python -m experiments.01d_eda_revisao # EDA de esforço, zeros, sazonalidade, painel, blocos e alvos
 venv/bin/python -m experiments.02_build_datasets # atributos e splits → data/processed/
+venv/bin/python -m experiments.04_multiclasse   # clássicos: classe do animal (~2 min)
+venv/bin/python -m experiments.05_binario       # clássicos: hotspot por segmento × mês (~4 min)
+venv/bin/python -m experiments.06_regressao     # clássicos: n por segmento × mês (~5 min)
 ```
 
 - **Dados baixados automaticamente:** na primeira execução, o `01c_external` baixa OSM, NASA POWER e SRTM e guarda tudo em cache em `data/external/raw/`.
@@ -64,7 +68,7 @@ data/
   interim/        silvestres_limpo.csv (1 linha por ocorrência) e campanhas.csv (esforço por campanha)
   processed/      ocorrencias.csv (multiclasse) e segmentos_periodo.csv (binário + regressão), com os splits
   external/       raw/ e processed/ dos dados externos
-src/              config, preprocessing, external, features, splits
+src/              config, preprocessing, external, features, splits, models, evaluation
 experiments/      scripts numerados na ordem de execução
-outputs/          figures/, tables/, models/
+outputs/          figures/ (eda/, modelos/), tables/ (resultados.csv e resumos), models/
 ```

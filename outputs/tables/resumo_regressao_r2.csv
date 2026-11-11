@@ -1,0 +1,27 @@
+conjunto_atributos,modelo,aleatorio,espacial,temporal
+base,hgb,0.231 ± 0.035,-0.039 ± 0.213,0.000
+base,linear,0.171 ± 0.017,0.021 ± 0.038,0.078
+base,media,-0.001 ± 0.001,-0.005 ± 0.006,-0.004
+base,poisson,0.091 ± 0.146,0.011 ± 0.068,0.038
+base,random_forest,0.226 ± 0.024,-0.053 ± 0.308,-0.046
+base+clima,hgb,0.233 ± 0.026,-0.046 ± 0.211,0.023
+base+clima,linear,0.173 ± 0.016,0.022 ± 0.039,0.070
+base+clima,media,-0.001 ± 0.001,-0.005 ± 0.006,-0.004
+base+clima,poisson,0.100 ± 0.113,0.010 ± 0.072,0.021
+base+clima,random_forest,0.225 ± 0.027,-0.052 ± 0.309,-0.021
+base+paisagem,hgb,0.222 ± 0.022,0.044 ± 0.113,-0.021
+base+paisagem,linear,0.172 ± 0.017,0.020 ± 0.041,0.079
+base+paisagem,media,-0.001 ± 0.001,-0.005 ± 0.006,-0.004
+base+paisagem,poisson,0.101 ± 0.138,-0.016 ± 0.091,0.048
+base+paisagem,random_forest,0.223 ± 0.022,-0.067 ± 0.321,-0.040
+base+via,hgb,0.232 ± 0.021,0.003 ± 0.096,-0.023
+base+via,linear,0.180 ± 0.015,0.044 ± 0.086,0.075
+base+via,media,-0.001 ± 0.001,-0.005 ± 0.006,-0.004
+base+via,poisson,0.164 ± 0.037,-3.947 ± 8.974,0.026
+base+via,random_forest,0.233 ± 0.018,-0.005 ± 0.213,-0.034
+completo,hgb,0.214 ± 0.022,0.048 ± 0.086,0.022
+completo,historico_segmento,0.118 ± 0.031,-0.005 ± 0.006,0.016
+completo,linear,0.182 ± 0.014,0.031 ± 0.091,0.069
+completo,media,-0.001 ± 0.001,-0.005 ± 0.006,-0.004
+completo,poisson,0.171 ± 0.026,-4.731 ± 10.362,0.023
+completo,random_forest,0.230 ± 0.019,0.010 ± 0.221,-0.019
