@@ -176,3 +176,18 @@ OPTUNA_SEARCH_SPACE = dict(
 # Primeiro trial: a configuração inicial da Etapa 6 (weight decay no piso do espaço)
 OPTUNA_FIRST_TRIAL = dict(n_layers=2, n_units=64, activation='relu', optimizer='adam', lr=1e-3,
                           batch_size=64, dropout=0.0, weight_decay=1e-6)
+
+# =============================================================================
+# REGULARIZAÇÃO (Etapa 8)
+# =============================================================================
+REG_FIG_DIR = FIGURES_DIR / 'regularizacao'
+REG_MAX_EPOCHS_NO_STOPPING = 200   # a configuração A treina até aqui, sem early stopping
+# Uma mudança por vez em relação a B; o resto vem de MLP_DEFAULTS (Adam, lr 1e-3, batch 64, paciência 20)
+REG_CONFIGS = {
+    'A. Sem regularização': dict(hidden=(128, 64), dropout=0.0, weight_decay=0.0, early_stopping=False,
+                                 max_epochs=REG_MAX_EPOCHS_NO_STOPPING),
+    'B. Early stopping': dict(hidden=(128, 64), dropout=0.0, weight_decay=0.0, early_stopping=True),
+    'C. Dropout 0,3': dict(hidden=(128, 64), dropout=0.3, weight_decay=0.0, early_stopping=True),
+    'D. L2 1e-3': dict(hidden=(128, 64), dropout=0.0, weight_decay=1e-3, early_stopping=True),
+    'E. Rede menor (32)': dict(hidden=(32,), dropout=0.0, weight_decay=0.0, early_stopping=True),
+}

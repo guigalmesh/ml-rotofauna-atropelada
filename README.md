@@ -1,6 +1,6 @@
 # RodoFauna: predição de atropelamento de fauna
 
-> 🚧 **Projeto em desenvolvimento.** Limpeza, EDA, dados externos, datasets de modelagem, os modelos clássicos, a MLP e a otimização de hiperparâmetros com Optuna estão implementados. O estudo de regularização ainda não existe, e a estrutura, os scripts e os resultados podem mudar sem aviso.
+> 🚧 **Projeto em desenvolvimento.** Limpeza, EDA, dados externos, datasets de modelagem, os modelos clássicos, a MLP, a otimização de hiperparâmetros com Optuna e o estudo de regularização estão implementados. Faltam a discussão final e o relatório, e a estrutura, os scripts e os resultados podem mudar sem aviso.
 
 Pipeline de aprendizado de máquina para estudar atropelamentos de fauna silvestre em rodovias do Distrito Federal. Os registros de campo vêm do monitoramento RodoFauna (IBRAM) e são combinados com dados abertos de vias (OpenStreetMap), clima (INMET e NASA POWER), relevo (SRTM) e cobertura do solo (MapBiomas).
 
@@ -22,7 +22,8 @@ Os três problemas planejados são:
 | Modelos de referência e clássicos nos três problemas, com ablação (`04`–`06`) | ✅ pronta |
 | MLP (PyTorch) nos três problemas, comparada com os clássicos (`src/mlp.py`, `04`–`06`) | ✅ pronta |
 | Otimização dos hiperparâmetros da MLP com Optuna, nos três problemas (`07_optuna`) | ✅ pronta |
-| Estudo de regularização e overfitting | ⏳ a fazer |
+| Estudo de regularização e overfitting da MLP (`08_regularizacao`) | ✅ pronta |
+| Discussão final, mapa de hotspots e relatório | ⏳ a fazer |
 
 ## Ambiente
 
@@ -45,6 +46,7 @@ venv/bin/python -m experiments.04_multiclasse   # clássicos + MLP: classe do an
 venv/bin/python -m experiments.05_binario       # clássicos + MLP: hotspot por segmento × mês (~4 + 6 min)
 venv/bin/python -m experiments.06_regressao     # clássicos + MLP: n por segmento × mês (~5 + 5 min)
 venv/bin/python -m experiments.07_optuna        # Optuna na MLP: 80 trials por problema e retreino da melhor (~40 min)
+venv/bin/python -m experiments.08_regularizacao # regularização: 5 configurações × 5 sementes por problema (~8 min)
 ```
 
 Os scripts `04`–`06` aceitam `--modelos classicos`, `--modelos mlp` ou `--modelos todos` (padrão). Com `mlp`, só a rede é treinada e as linhas dos clássicos em `outputs/tables/resultados.csv` são preservadas.
@@ -77,5 +79,5 @@ data/
   external/       raw/ e processed/ dos dados externos
 src/              config, preprocessing, external, features, splits, models, mlp, evaluation
 experiments/      scripts numerados na ordem de execução
-outputs/          figures/ (eda/, modelos/, optuna/), tables/ (resultados.csv e resumos), models/, optuna.db
+outputs/          figures/ (eda/, modelos/, optuna/, regularizacao/), tables/ (resultados.csv e resumos), models/, optuna.db
 ```
