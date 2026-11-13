@@ -139,3 +139,17 @@ ABLATION_SETS = {
 HISTORY_GROUP = 'historico'
 SPLITS = ['aleatorio', 'espacial', 'temporal']
 PERMUTATION_REPEATS = 10
+
+# =============================================================================
+# MLP (Etapa 6)
+# =============================================================================
+# Configuração inicial: rede pequena para dados tabulares com poucos milhares
+# de linhas; Adam com lr padrão; early stopping pela loss de validação.
+# Dropout e weight decay ficam em zero aqui e são estudados na Etapa 8
+MLP_DEFAULTS = dict(hidden=(64, 32), activation='relu', dropout=0.0, weight_decay=0.0, optimizer='adam',
+                    lr=1e-3, batch_size=64, max_epochs=300, patience=20, early_stopping=True)
+MLP_SEEDS_CV = [42, 43, 44]
+MLP_SEEDS_TEST = [42, 43, 44, 45, 46]
+MLP_FEATURE_SETS = ['base', 'completo']
+MLP_INNER_VAL_FRACTION = 0.15   # validação do early stopping no split aleatório
+TORCH_THREADS = 4

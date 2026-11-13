@@ -63,15 +63,16 @@ def regression_metrics(y_true, y_pred) -> dict:
 # =============================================================================
 def save_results(rows: list[dict], problema: str) -> pd.DataFrame:
     """
-    Grava as linhas do problema em outputs/tables/resultados.csv (formato
-    longo: problema, modelo, conjunto_atributos, split, fold, metrica, valor,
-    tempo_s), substituindo as linhas anteriores do mesmo problema.
+    Grava as linhas em outputs/tables/resultados.csv (formato longo: problema,
+    modelo, conjunto_atributos, split, fold, metrica, valor, tempo_s e, na MLP,
+    semente e epocas), substituindo só as linhas anteriores dos mesmos modelos
+    no mesmo problema. Assim clássicos e MLP podem ser rodados em separado.
     """
     novo = pd.DataFrame(rows)
     if config.RESULTS_CSV.exists():
         antigo = pd.read_csv(config.RESULTS_CSV)
-        antigo = antigo[antigo['problema'] != problema]
-        novo = pd.concat([antigo, novo], ignore_index=True)
+        substituir = (antigo['problema'] == problema) & antigo['modelo'].isin(novo['modelo'].unique())
+        novo = pd.concat([antigo[~substituir], novo], ignore_index=True)
     novo.to_csv(config.RESULTS_CSV, index=False)
     return novo
 
@@ -85,8 +86,9 @@ def summarize(results: pd.DataFrame, problema: str, metrica: str) -> pd.DataFram
 
 
 def ablation_table(results: pd.DataFrame, problema: str, metrica: str) -> pd.DataFrame:
-    """Ganho médio de cada conjunto de atributos sobre o 'base', por modelo × split."""
-    r = results[(results['problema'] == problema) & (results['metrica'] == metrica)]
+    """Ganho médio de cada conjunto de atributos sobre o 'base', por modelo × split (só os clássicos)."""
+    r = results[(results['problema'] == problema) & (results['metrica'] == metrica)
+                & ~results['modelo'].str.startswith('mlp')]
     medias = r.groupby(['modelo', 'split', 'conjunto_atributos'])['valor'].mean().unstack('conjunto_atributos')
     base = medias['base']
     ganho = medias.sub(base, axis=0)
@@ -95,9 +97,63 @@ def ablation_table(results: pd.DataFrame, problema: str, metrica: str) -> pd.Dat
     return ganho.drop(columns='base').round(4)
 
 
+def comparison_table(results: pd.DataFrame, problema: str, metrica: str) -> pd.DataFrame:
+    """
+    Clássicos × MLP no conjunto completo: média ± desvio da métrica principal
+    em cada split (desvio entre folds e, na MLP, também entre sementes) e o
+    tempo médio de treino por ajuste no split temporal.
+    """
+    r = results[(results['problema'] == problema) & (results['conjunto_atributos'] == 'completo')]
+    m = r[r['metrica'] == metrica]
+    agg = m.groupby(['modelo', 'split'])['valor'].agg(['mean', 'std']).reset_index()
+    agg['valor'] = agg.apply(lambda l: f"{l['mean']:.3f}" + (f" ± {l['std']:.3f}" if pd.notna(l['std']) else ''), axis=1)
+    tabela = agg.pivot(index='modelo', columns='split', values='valor').reindex(columns=config.SPLITS)
+    tabela['tempo_treino_s'] = m[m['split'] == 'temporal'].groupby('modelo')['tempo_s'].mean().round(2)
+    ordem = m[m['split'] == 'temporal'].groupby('modelo')['valor'].mean().sort_values(ascending=not HIGHER_IS_BETTER[metrica])
+    return tabela.reindex(ordem.index)
+
+
 # =============================================================================
 # FIGURAS
 # =============================================================================
+def plot_learning_curves(curvas: pd.DataFrame, metrica: str, titulo: str, path):
+    """Loss e métrica principal por época, treino × validação interna, uma linha por semente."""
+    fig, axes = plt.subplots(1, 2, figsize=(13, 4.5))
+    for seed, h in curvas.groupby('semente'):
+        for ax, base in zip(axes, ['loss', 'metrica']):
+            ax.plot(h['epoca'], h[f'{base}_treino'], color='steelblue', alpha=0.6, lw=1)
+            ax.plot(h['epoca'], h[f'{base}_val'], color='darkorange', alpha=0.8, lw=1)
+        axes[0].axvline(h.loc[h['loss_val'].idxmin(), 'epoca'], color='gray', ls=':', lw=0.8)
+    axes[0].set_title('Loss (linha pontilhada: melhor época de cada semente)')
+    axes[0].set_ylabel('loss')
+    axes[1].set_title(f'{metrica}')
+    axes[1].set_ylabel(metrica)
+    for ax in axes:
+        ax.set_xlabel('época')
+        ax.plot([], [], color='steelblue', label='treino')
+        ax.plot([], [], color='darkorange', label='validação interna')
+        ax.legend()
+    fig.suptitle(titulo)
+    plt.tight_layout()
+    plt.savefig(path, dpi=300)
+    plt.close()
+
+
+def plot_comparison(results: pd.DataFrame, problema: str, metrica: str, path):
+    """Métrica principal por modelo e split no conjunto completo (barra = média, erro = desvio)."""
+    r = results[(results['problema'] == problema) & (results['conjunto_atributos'] == 'completo') & (results['metrica'] == metrica)]
+    ordem = r[r['split'] == 'temporal'].groupby('modelo')['valor'].mean().sort_values(ascending=not HIGHER_IS_BETTER[metrica]).index
+    plt.figure(figsize=(11, 4.5))
+    sns.barplot(data=r, x='modelo', y='valor', hue='split', order=ordem, hue_order=config.SPLITS, errorbar='sd')
+    plt.title(f"{problema}: {metrica} no conjunto completo ({'maior' if HIGHER_IS_BETTER[metrica] else 'menor'} é melhor)")
+    plt.xlabel('')
+    plt.ylabel(metrica)
+    plt.xticks(rotation=20)
+    plt.tight_layout()
+    plt.savefig(path, dpi=300)
+    plt.close()
+
+
 def plot_confusion(y_true, y_pred, labels, titulo, path):
     cm = confusion_matrix(y_true, y_pred, labels=labels)
     cm_pct = cm / cm.sum(axis=1, keepdims=True) * 100

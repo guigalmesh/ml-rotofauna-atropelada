@@ -1,8 +1,12 @@
 """
-Etapa 5, problema multiclasse: classe taxonômica de cada ocorrência.
+Etapas 5 e 6, problema multiclasse: classe taxonômica de cada ocorrência.
 Referências ingênuas, regressão logística, random forest e HGB, nos três
-splits, com ablação dos dados externos e importância por permuta.
+splits, com ablação dos dados externos e importância por permuta; e a MLP
+(--modelos mlp), comparada com os clássicos.
 """
+import argparse
+
+import joblib
 import pandas as pd
 
 from src import config
@@ -10,6 +14,7 @@ from src.evaluation import (
     MAIN_METRIC, ablation_table, classification_metrics, per_class_metrics, plot_ablation,
     plot_confusion, plot_importance, save_results, summarize,
 )
+from src.mlp import run_mlp_section
 from src.models import SplitContext, TREE_MODELS, classical_models, evaluate_models, importance_by_permutation
 
 PROBLEMA = 'multiclasse'
@@ -17,14 +22,7 @@ DATASET = 'ocorrencias'
 CLASSES = ['birds', 'reptiles', 'mammals', 'amphibians']
 
 
-def run():
-    config.MODEL_FIG_DIR.mkdir(parents=True, exist_ok=True)
-    df = pd.read_csv(config.OCORRENCIAS_CSV, parse_dates=['data'])
-    y = df['classe']
-    ctx = SplitContext()
-    print(f"{len(df)} ocorrências; treino temporal {(df['split_temporal'] == 'treino').sum()}, "
-          f"teste {(df['split_temporal'] == 'teste').sum()}")
-
+def run_classicos(df, y, ctx):
     # =========================================================================
     # 1. MODELOS × CONJUNTOS × SPLITS
     # =========================================================================
@@ -50,7 +48,7 @@ def run():
     # 3. MELHOR MODELO NO TESTE TEMPORAL: MATRIZ DE CONFUSÃO, POR CLASSE, IMPORTÂNCIA
     # =========================================================================
     teste = results[(results['split'] == 'temporal') & (results['conjunto_atributos'] == 'completo')
-                    & (results['metrica'] == MAIN_METRIC[PROBLEMA])].set_index('modelo')['valor']
+                    & (results['metrica'] == MAIN_METRIC[PROBLEMA]) & results['modelo'].isin(preds)].set_index('modelo')['valor']
     melhor = teste.idxmax()
     melhor_arvore = teste[teste.index.isin(TREE_MODELS)].idxmax()
     print(f"\nMelhor no teste temporal (completo): {melhor} (F1 macro {teste[melhor]:.3f}); melhor de árvores: {melhor_arvore}")
@@ -62,6 +60,8 @@ def run():
     print(por_classe.to_string(index=False))
 
     p = preds[melhor_arvore]
+    config.MODELS_DIR.mkdir(parents=True, exist_ok=True)
+    joblib.dump({'pipe': p['pipe'], 'features': p['features']}, config.MODELS_DIR / f'{PROBLEMA}_{melhor_arvore}.joblib')
     imp = importance_by_permutation(p['pipe'], df.loc[p['mask'], p['features']], y[p['mask']], scoring='f1_macro')
     imp.to_csv(config.TABLES_DIR / f'importancia_{PROBLEMA}.csv', index=False)
     plot_importance(imp, f'Multiclasse: importância por permuta ({melhor_arvore}, teste temporal, F1 macro)',
@@ -70,5 +70,23 @@ def run():
     print(f"\n[OK] resultados em {config.RESULTS_CSV.relative_to(config.ROOT)}; figuras em {config.MODEL_FIG_DIR.relative_to(config.ROOT)}/")
 
 
+def run(modelos: str):
+    config.MODEL_FIG_DIR.mkdir(parents=True, exist_ok=True)
+    df = pd.read_csv(config.OCORRENCIAS_CSV, parse_dates=['data'])
+    y = df['classe']
+    ctx = SplitContext()
+    print(f"{len(df)} ocorrências; treino temporal {(df['split_temporal'] == 'treino').sum()}, "
+          f"teste {(df['split_temporal'] == 'teste').sum()}")
+    if modelos in ('classicos', 'todos'):
+        run_classicos(df, y, ctx)
+    if modelos in ('mlp', 'todos'):
+        # A MLP recebe a classe como índice 0–3, na ordem de CLASSES
+        codigos = pd.Categorical(y, categories=CLASSES).codes
+        run_mlp_section(df, codigos, PROBLEMA, PROBLEMA, DATASET, ctx, classes=CLASSES)
+
+
 if __name__ == '__main__':
-    run()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--modelos', choices=['classicos', 'mlp', 'todos'], default='todos',
+                        help='quais modelos treinar (padrão: todos)')
+    run(parser.parse_args().modelos)

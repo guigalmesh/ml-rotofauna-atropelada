@@ -1,10 +1,12 @@
 """
-Etapa 5, problema binário: hotspot (n >= HOTSPOT_MIN_N) por segmento × mês.
+Etapas 5 e 6, problema binário: hotspot (n >= HOTSPOT_MIN_N) por segmento × mês.
 Referências (prevalência e histórico do segmento), logística, random forest e
 HGB nos três splits, ablação, importância por permuta e sensibilidade ao
-critério n >= 2.
+critério n >= 2; e a MLP (--modelos mlp), comparada com os clássicos.
 """
-import numpy as np
+import argparse
+
+import joblib
 import pandas as pd
 
 from src import config
@@ -12,6 +14,7 @@ from src.evaluation import (
     MAIN_METRIC, ablation_table, classification_metrics, plot_ablation, plot_confusion,
     plot_importance, save_results, summarize,
 )
+from src.mlp import run_mlp_section
 from src.models import SplitContext, TREE_MODELS, classical_models, evaluate_models, importance_by_permutation, iter_splits
 
 PROBLEMA = 'binario'
@@ -41,13 +44,7 @@ def segment_history_baseline(df, y, ctx, problema):
     return rows
 
 
-def run():
-    config.MODEL_FIG_DIR.mkdir(parents=True, exist_ok=True)
-    df = pd.read_csv(config.SEGMENTOS_CSV)
-    y = (df['n'] >= config.HOTSPOT_MIN_N).astype(int)
-    ctx = SplitContext()
-    print(f"{len(df)} linhas; positivos {y.mean() * 100:.1f}%")
-
+def run_classicos(df, y, ctx):
     print("\n1. TREINO E AVALIAÇÃO")
     rows, preds = evaluate_models(
         df, y, PROBLEMA, DATASET, classical_models(PROBLEMA), list(config.ABLATION_SETS), config.SPLITS, ctx,
@@ -74,6 +71,8 @@ def run():
     p = preds[melhor]
     plot_confusion(y[p['mask']], p['y_pred'], [0, 1], f'{melhor} (teste temporal, limiar 0,5)', config.MODEL_FIG_DIR / f'{PROBLEMA}_confusao.png')
     p = preds[melhor_arvore]
+    config.MODELS_DIR.mkdir(parents=True, exist_ok=True)
+    joblib.dump({'pipe': p['pipe'], 'features': p['features']}, config.MODELS_DIR / f'{PROBLEMA}_{melhor_arvore}.joblib')
     imp = importance_by_permutation(p['pipe'], df.loc[p['mask'], p['features']], y[p['mask']], scoring='roc_auc')
     imp.to_csv(config.TABLES_DIR / f'importancia_{PROBLEMA}.csv', index=False)
     plot_importance(imp, f'Hotspot: importância por permuta ({melhor_arvore}, teste temporal, ROC-AUC)',
@@ -93,5 +92,20 @@ def run():
     print(f"\n[OK] resultados em {config.RESULTS_CSV.relative_to(config.ROOT)}")
 
 
+def run(modelos: str):
+    config.MODEL_FIG_DIR.mkdir(parents=True, exist_ok=True)
+    df = pd.read_csv(config.SEGMENTOS_CSV)
+    y = (df['n'] >= config.HOTSPOT_MIN_N).astype(int)
+    ctx = SplitContext()
+    print(f"{len(df)} linhas; positivos {y.mean() * 100:.1f}%")
+    if modelos in ('classicos', 'todos'):
+        run_classicos(df, y, ctx)
+    if modelos in ('mlp', 'todos'):
+        run_mlp_section(df, y.values, PROBLEMA, PROBLEMA, DATASET, ctx)
+
+
 if __name__ == '__main__':
-    run()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--modelos', choices=['classicos', 'mlp', 'todos'], default='todos',
+                        help='quais modelos treinar (padrão: todos)')
+    run(parser.parse_args().modelos)

@@ -1,6 +1,6 @@
 # RodoFauna: predição de atropelamento de fauna
 
-> 🚧 **Projeto em desenvolvimento.** Limpeza, EDA, dados externos, datasets de modelagem e os modelos clássicos estão implementados. A MLP, a otimização de hiperparâmetros e o estudo de regularização ainda não existem, e a estrutura, os scripts e os resultados podem mudar sem aviso.
+> 🚧 **Projeto em desenvolvimento.** Limpeza, EDA, dados externos, datasets de modelagem, os modelos clássicos e a MLP estão implementados. A otimização de hiperparâmetros e o estudo de regularização ainda não existem, e a estrutura, os scripts e os resultados podem mudar sem aviso.
 
 Pipeline de aprendizado de máquina para estudar atropelamentos de fauna silvestre em rodovias do Distrito Federal. Os registros de campo vêm do monitoramento RodoFauna (IBRAM) e são combinados com dados abertos de vias (OpenStreetMap), clima (INMET e NASA POWER), relevo (SRTM) e cobertura do solo (MapBiomas).
 
@@ -20,7 +20,7 @@ Os três problemas planejados são:
 | EDA de revisão: esforço, zeros, sazonalidade, painel, blocos e alvos (`01d_eda_revisao`) | ✅ pronta |
 | Datasets de modelagem e splits (`02_build_datasets`) | ✅ pronta |
 | Modelos de referência e clássicos nos três problemas, com ablação (`04`–`06`) | ✅ pronta |
-| MLP (PyTorch) nos três problemas | ⏳ a fazer |
+| MLP (PyTorch) nos três problemas, comparada com os clássicos (`src/mlp.py`, `04`–`06`) | ✅ pronta |
 | Otimização de hiperparâmetros e estudo de regularização | ⏳ a fazer |
 
 ## Ambiente
@@ -40,10 +40,12 @@ venv/bin/python -m experiments.01b_eda        # figuras e tabelas da EDA
 venv/bin/python -m experiments.01c_external   # dados externos; precisa de internet
 venv/bin/python -m experiments.01d_eda_revisao # EDA de esforço, zeros, sazonalidade, painel, blocos e alvos
 venv/bin/python -m experiments.02_build_datasets # atributos e splits → data/processed/
-venv/bin/python -m experiments.04_multiclasse   # clássicos: classe do animal (~2 min)
-venv/bin/python -m experiments.05_binario       # clássicos: hotspot por segmento × mês (~4 min)
-venv/bin/python -m experiments.06_regressao     # clássicos: n por segmento × mês (~5 min)
+venv/bin/python -m experiments.04_multiclasse   # clássicos + MLP: classe do animal (~2 + 2 min)
+venv/bin/python -m experiments.05_binario       # clássicos + MLP: hotspot por segmento × mês (~4 + 6 min)
+venv/bin/python -m experiments.06_regressao     # clássicos + MLP: n por segmento × mês (~5 + 5 min)
 ```
+
+Os scripts `04`–`06` aceitam `--modelos classicos`, `--modelos mlp` ou `--modelos todos` (padrão). Com `mlp`, só a rede é treinada e as linhas dos clássicos em `outputs/tables/resultados.csv` são preservadas.
 
 - **Dados baixados automaticamente:** na primeira execução, o `01c_external` baixa OSM, NASA POWER e SRTM e guarda tudo em cache em `data/external/raw/`.
 - **Dados baixados à mão:** os CSVs do INMET e o raster do MapBiomas. O passo a passo está em [`data/external/FONTES.md`](data/external/FONTES.md).
