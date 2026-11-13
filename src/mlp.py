@@ -49,6 +49,17 @@ class MLP(nn.Module):
         return self.net(x)
 
 
+def hidden_layers(n_layers: int, n_units: int) -> tuple:
+    """Camadas em funil: a primeira com n_units e cada seguinte com a metade (mínimo 8)."""
+    return tuple(max(8, n_units // 2 ** i) for i in range(n_layers))
+
+
+def params_from_search(p: dict) -> dict:
+    """Converte os hiperparâmetros do espaço de busca (n_layers, n_units, ...) nos argumentos de train_mlp."""
+    p = dict(p)
+    return {'hidden': hidden_layers(p.pop('n_layers'), p.pop('n_units')), **p}
+
+
 def _criterion(task: str, y_tr: np.ndarray, n_out: int = 1):
     """Perda de cada problema, com os pesos calculados só no treino."""
     if task == 'multiclasse':
@@ -190,7 +201,7 @@ def inner_validation_mask(df: pd.DataFrame, m_tr: np.ndarray, split: str, ctx, s
 # =============================================================================
 # LAÇO DE AVALIAÇÃO
 # =============================================================================
-def _dense(X) -> np.ndarray:
+def to_dense(X) -> np.ndarray:
     return np.asarray(X.todense() if hasattr(X, 'todense') else X, dtype=np.float32)
 
 
@@ -216,7 +227,7 @@ def evaluate_mlp(df: pd.DataFrame, y: np.ndarray, task: str, problema: str, data
                     assert not (m_aval & (m_fit | m_val)).any(), 'conjunto avaliado vazou para o treino'
                     assert not (m_fit & m_val).any() and m_fit.any() and m_val.any()
                     pre = make_preprocessor(feats, scale=scale).fit(df.loc[m_fit, feats])
-                    X_fit, X_val, X_aval = (_dense(pre.transform(df.loc[m, feats])) for m in (m_fit, m_val, m_aval))
+                    X_fit, X_val, X_aval = (to_dense(pre.transform(df.loc[m, feats])) for m in (m_fit, m_val, m_aval))
                     t0 = time.perf_counter()
                     model, hist, epoca = train_mlp(X_fit, y[m_fit], X_val, y[m_val], task, seed=seed,
                                                    n_out=len(classes) if classes else None, **params)

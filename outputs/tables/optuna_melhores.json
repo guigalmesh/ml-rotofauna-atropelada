@@ -1,0 +1,32 @@
+{
+  "multiclasse": {
+    "n_layers": 2,
+    "n_units": 223,
+    "activation": "relu",
+    "optimizer": "adam",
+    "lr": 0.005399484409787433,
+    "batch_size": 256,
+    "dropout": 0.41622132040021087,
+    "weight_decay": 7.068974950624607e-06
+  },
+  "binario": {
+    "n_layers": 1,
+    "n_units": 20,
+    "activation": "tanh",
+    "optimizer": "sgd",
+    "lr": 0.0004244501140385687,
+    "batch_size": 128,
+    "dropout": 0.24463860627720346,
+    "weight_decay": 8.247936123921338e-05
+  },
+  "regressao": {
+    "n_layers": 2,
+    "n_units": 255,
+    "activation": "relu",
+    "optimizer": "adam",
+    "lr": 0.002356922354930181,
+    "batch_size": 256,
+    "dropout": 0.12854006920611447,
+    "weight_decay": 5.471158657604907e-06
+  }
+}

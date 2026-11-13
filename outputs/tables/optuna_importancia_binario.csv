@@ -1,0 +1,9 @@
+hiperparametro,importancia
+activation,0.3182
+dropout,0.2368
+weight_decay,0.1211
+lr,0.1153
+optimizer,0.0906
+n_units,0.0453
+n_layers,0.0416
+batch_size,0.0311

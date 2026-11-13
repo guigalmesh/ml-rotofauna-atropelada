@@ -153,3 +153,26 @@ MLP_SEEDS_TEST = [42, 43, 44, 45, 46]
 MLP_FEATURE_SETS = ['base', 'completo']
 MLP_INNER_VAL_FRACTION = 0.15   # validação do early stopping no split aleatório
 TORCH_THREADS = 4
+
+# =============================================================================
+# OPTUNA (Etapa 7)
+# =============================================================================
+OPTUNA_FIG_DIR = FIGURES_DIR / 'optuna'
+OPTUNA_DB = OUTPUTS_DIR / 'optuna.db'
+OPTUNA_N_TRIALS = 80
+OPTUNA_STARTUP_TRIALS = 10        # trials sorteados antes de o TPE começar a propor
+OPTUNA_SEEDS_TRIAL = [42, 43, 44]  # cada trial é a média de 3 treinos
+OPTUNA_SEEDS_CONFIRM = list(range(100, 110))  # sementes fora da busca, para confirmar o ganho na validação
+# Espaço de busca. Limites pensados para ~5 mil linhas e ~20 atributos:
+#   n_layers / n_units: de uma camada de 16 (quase um modelo linear) a 256 → 128 → 64,
+#       já muito acima do que os dados sustentam; cada camada tem a metade da anterior
+#   lr: uma década para cada lado do padrão do Adam (1e-3)
+#   batch_size: de 32 (gradiente ruidoso) a 256 (~20 passos por época)
+#   dropout e weight_decay: de praticamente nenhum a regularização forte
+OPTUNA_SEARCH_SPACE = dict(
+    n_layers=(1, 3), n_units=(16, 256), activation=['relu', 'tanh'], optimizer=['adam', 'rmsprop', 'sgd'],
+    lr=(1e-4, 1e-2), batch_size=[32, 64, 128, 256], dropout=(0.0, 0.5), weight_decay=(1e-6, 1e-2),
+)
+# Primeiro trial: a configuração inicial da Etapa 6 (weight decay no piso do espaço)
+OPTUNA_FIRST_TRIAL = dict(n_layers=2, n_units=64, activation='relu', optimizer='adam', lr=1e-3,
+                          batch_size=64, dropout=0.0, weight_decay=1e-6)
