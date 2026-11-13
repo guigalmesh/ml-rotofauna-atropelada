@@ -1,0 +1,9 @@
+modelo,pesos,accuracy,balanced_accuracy,f1_macro
+hgb,com pesos,0.5901,0.3373,0.3357
+hgb,sem pesos,0.664,0.2927,0.297
+logistica,com pesos,0.4676,0.4084,0.3136
+logistica,sem pesos,0.7186,0.3102,0.3128
+mlp,com pesos,0.4832,0.4439,0.3433
+mlp,sem pesos,0.7073,0.258,0.2244
+random_forest,com pesos,0.5314,0.4087,0.3559
+random_forest,sem pesos,0.6994,0.2869,0.2798

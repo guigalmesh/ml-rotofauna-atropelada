@@ -28,7 +28,7 @@ from src import config
 from src.evaluation import (
     HIGHER_IS_BETTER, MAIN_METRIC, comparison_table, plot_comparison, plot_learning_curves, save_results,
 )
-from src.mlp import MLP, evaluate_mlp, main_metric, params_from_search, predict_mlp, to_dense, train_mlp
+from src.mlp import MLP, evaluate_mlp, main_metric, mlp_test_report, params_from_search, predict_mlp, to_dense, train_mlp
 from src.models import SplitContext, feature_set, make_preprocessor
 
 CLASSES = ['birds', 'reptiles', 'mammals', 'amphibians']
@@ -319,6 +319,7 @@ def final_evaluation(df, y, problema: str, classes, params: dict, ctx: SplitCont
     plot_learning_curves(curvas, metrica, f'MLP otimizada, {problema}: treino × validação interna (teste temporal, conjunto completo)',
                          config.OPTUNA_FIG_DIR / f'{problema}_curvas_otimizada.png')
     joblib.dump(artefato, config.MODELS_DIR / f'{problema}_mlp_optuna.joblib')
+    mlp_test_report(df, y, problema, artefato, nome='mlp_optuna')
 
     comparativo = comparison_table(results, problema, metrica)
     comparativo.to_csv(config.TABLES_DIR / f'comparativo_{problema}.csv')

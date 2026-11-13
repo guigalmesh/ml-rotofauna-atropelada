@@ -20,8 +20,8 @@ from sklearn.metrics import f1_score, mean_poisson_deviance, roc_auc_score
 
 from src import config
 from src.evaluation import (
-    HIGHER_IS_BETTER, MAIN_METRIC, classification_metrics, comparison_table,
-    plot_comparison, plot_learning_curves, regression_metrics, save_results,
+    HIGHER_IS_BETTER, MAIN_METRIC, classification_metrics, comparison_table, per_class_metrics,
+    plot_comparison, plot_confusion, plot_learning_curves, plot_regression_diagnostics, regression_metrics, save_results,
 )
 from src.models import feature_set, iter_splits, make_preprocessor
 from src.splits import spatial_cv_splits
@@ -60,8 +60,10 @@ def params_from_search(p: dict) -> dict:
     return {'hidden': hidden_layers(p.pop('n_layers'), p.pop('n_units')), **p}
 
 
-def _criterion(task: str, y_tr: np.ndarray, n_out: int = 1):
-    """Perda de cada problema, com os pesos calculados só no treino."""
+def _criterion(task: str, y_tr: np.ndarray, n_out: int = 1, balanced: bool = True):
+    """Perda de cada problema; com balanced, os pesos de classe são calculados só no treino."""
+    if task != 'regressao' and not balanced:
+        return nn.CrossEntropyLoss() if task == 'multiclasse' else nn.BCEWithLogitsLoss()
     if task == 'multiclasse':
         # minlength e o piso de 1 cobrem o caso de uma classe ausente no treino da rodada
         contagem = np.maximum(np.bincount(y_tr, minlength=n_out), 1)
@@ -110,7 +112,7 @@ def main_metric(task: str, y_true: np.ndarray, y_pred, y_proba) -> float:
 
 def train_mlp(X_tr: np.ndarray, y_tr: np.ndarray, X_val: np.ndarray, y_val: np.ndarray, task: str, *,
               seed: int, hidden=(64, 32), activation='relu', dropout=0.0, weight_decay=0.0, optimizer='adam',
-              lr=1e-3, batch_size=64, max_epochs=300, patience=20, early_stopping=True, n_out=None):
+              lr=1e-3, batch_size=64, max_epochs=300, patience=20, early_stopping=True, n_out=None, balanced=True):
     """
     Treina a MLP e devolve (modelo, histórico por época, melhor época). O
     histórico traz a loss e a métrica principal no treino e na validação,
@@ -122,7 +124,7 @@ def train_mlp(X_tr: np.ndarray, y_tr: np.ndarray, X_val: np.ndarray, y_val: np.n
     torch.set_num_threads(config.TORCH_THREADS)
     n_out = n_out or (int(max(y_tr.max(), y_val.max())) + 1 if task == 'multiclasse' else 1)
     model = MLP(X_tr.shape[1], n_out, hidden, activation, dropout)
-    criterio = _criterion(task, y_tr, n_out)
+    criterio = _criterion(task, y_tr, n_out, balanced)
     otimizadores = {
         'adam': lambda p: torch.optim.Adam(p, lr=lr, weight_decay=weight_decay),
         'rmsprop': lambda p: torch.optim.RMSprop(p, lr=lr, weight_decay=weight_decay),
@@ -283,9 +285,34 @@ def run_mlp_section(df: pd.DataFrame, y: np.ndarray, task: str, problema: str, d
 
     config.MODELS_DIR.mkdir(parents=True, exist_ok=True)
     joblib.dump(melhor, config.MODELS_DIR / f'{problema}_mlp.joblib')
+    mlp_test_report(df, y, problema, melhor)
     print(f"\n[OK] MLP: resultados em {config.RESULTS_CSV.relative_to(config.ROOT)}; "
           f"modelo (semente {melhor['semente']}) em {(config.MODELS_DIR / f'{problema}_mlp.joblib').relative_to(config.ROOT)}")
     return results
+
+
+def mlp_test_report(df: pd.DataFrame, y: np.ndarray, problema: str, artefato: dict, nome: str = 'mlp'):
+    """
+    Figuras e tabelas da MLP salva no teste temporal: matriz de confusão e
+    métricas por classe (classificação) ou real × previsto, resíduos e
+    calibração (regressão). Usa o modelo de uma semente, a do artefato.
+    """
+    m_teste = (df['split_temporal'] == 'teste').values
+    p = artefato['params']
+    classes = artefato['classes']
+    model = MLP(artefato['n_in'], len(classes) if classes else 1, p['hidden'], p['activation'], p['dropout'])
+    model.load_state_dict(artefato['state_dict'])
+    y_pred, _ = predict_mlp(model, to_dense(artefato['pre'].transform(df.loc[m_teste, artefato['features']])), artefato['task'])
+    titulo = f"{nome} (teste temporal, semente {artefato['semente']})"
+    if artefato['task'] == 'regressao':
+        plot_regression_diagnostics(y[m_teste], y_pred, titulo, config.MODEL_FIG_DIR / f'{problema}_{nome}_diagnostico.png')
+        return
+    rotulos = classes or [0, 1]
+    y_real, y_prev = (np.asarray(rotulos)[v] for v in (y[m_teste], y_pred))
+    plot_confusion(y_real, y_prev, rotulos, titulo, config.MODEL_FIG_DIR / f'{problema}_{nome}_confusao.png')
+    por_classe = per_class_metrics(y_real, y_prev, rotulos).assign(modelo=nome, semente=artefato['semente'])
+    por_classe.to_csv(config.TABLES_DIR / f'por_classe_{problema}_{nome}.csv', index=False)
+    print(f"\nMétricas por classe, {titulo}:\n{por_classe.to_string(index=False)}")
 
 
 def load_mlp(path):

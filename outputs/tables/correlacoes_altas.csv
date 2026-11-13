@@ -1,0 +1,8 @@
+atributo_1,atributo_2,spearman,dataset
+mes_sin,dia_ano_sin,0.963,ocorrências
+mes_cos,dia_ano_cos,0.932,ocorrências
+y,x_mais_y,0.908,ocorrências
+x,x_mais_y,0.856,ocorrências
+y,x_mais_y,0.931,painel segmento × mês
+mes_cos,seco,-0.872,painel segmento × mês
+x,x_mais_y,0.816,painel segmento × mês

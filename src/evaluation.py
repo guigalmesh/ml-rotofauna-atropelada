@@ -32,6 +32,8 @@ def classification_metrics(y_true, y_pred, y_proba=None) -> dict:
     }
     if y_proba is not None and len(np.unique(y_true)) == 2:
         out['roc_auc'] = roc_auc_score(y_true, y_proba)
+        out['precision_positivo'] = precision_score(y_true, y_pred, pos_label=1, zero_division=0)
+        out['recall_positivo'] = recall_score(y_true, y_pred, pos_label=1, zero_division=0)
         out['f1_positivo'] = f1_score(y_true, y_pred, pos_label=1, zero_division=0)
     return out
 

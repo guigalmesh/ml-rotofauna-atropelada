@@ -63,7 +63,7 @@ def run_classicos(df, y, ctx):
     plot_ablation(ganho, 'Hotspot: ganho de ROC-AUC sobre o conjunto base', config.MODEL_FIG_DIR / f'{PROBLEMA}_ablacao.png')
     print(f"\nGanho de ROC-AUC sobre o base:\n{ganho.to_string()}")
 
-    teste = results[(results['split'] == 'temporal') & (results['conjunto_atributos'] == 'completo')
+    teste = results[(results['problema'] == PROBLEMA) & (results['split'] == 'temporal') & (results['conjunto_atributos'] == 'completo')
                     & (results['metrica'] == MAIN_METRIC[PROBLEMA]) & results['modelo'].isin(preds)].set_index('modelo')['valor']
     melhor = teste.idxmax()
     melhor_arvore = teste[teste.index.isin(TREE_MODELS)].idxmax()

@@ -47,7 +47,7 @@ def run_classicos(df, y, ctx):
     # =========================================================================
     # 3. MELHOR MODELO NO TESTE TEMPORAL: MATRIZ DE CONFUSÃO, POR CLASSE, IMPORTÂNCIA
     # =========================================================================
-    teste = results[(results['split'] == 'temporal') & (results['conjunto_atributos'] == 'completo')
+    teste = results[(results['problema'] == PROBLEMA) & (results['split'] == 'temporal') & (results['conjunto_atributos'] == 'completo')
                     & (results['metrica'] == MAIN_METRIC[PROBLEMA]) & results['modelo'].isin(preds)].set_index('modelo')['valor']
     melhor = teste.idxmax()
     melhor_arvore = teste[teste.index.isin(TREE_MODELS)].idxmax()

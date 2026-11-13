@@ -19,10 +19,12 @@ Os três problemas planejados são:
 | Dados externos e segmentação das rodovias (`01c_external`) | ✅ pronta |
 | EDA de revisão: esforço, zeros, sazonalidade, painel, blocos e alvos (`01d_eda_revisao`) | ✅ pronta |
 | Datasets de modelagem e splits (`02_build_datasets`) | ✅ pronta |
+| EDA dos atributos de modelagem: descritivas, correlação e outliers (`03_eda_atributos`) | ✅ pronta |
 | Modelos de referência e clássicos nos três problemas, com ablação (`04`–`06`) | ✅ pronta |
 | MLP (PyTorch) nos três problemas, comparada com os clássicos (`src/mlp.py`, `04`–`06`) | ✅ pronta |
 | Otimização dos hiperparâmetros da MLP com Optuna, nos três problemas (`07_optuna`) | ✅ pronta |
 | Estudo de regularização e overfitting da MLP (`08_regularizacao`) | ✅ pronta |
+| Impacto do desbalanceamento: sem e com pesos de classe (`09_desbalanceamento`) | ✅ pronta |
 | Discussão final, mapa de hotspots e relatório | ⏳ a fazer |
 
 ## Ambiente
@@ -42,11 +44,13 @@ venv/bin/python -m experiments.01b_eda        # figuras e tabelas da EDA
 venv/bin/python -m experiments.01c_external   # dados externos; precisa de internet
 venv/bin/python -m experiments.01d_eda_revisao # EDA de esforço, zeros, sazonalidade, painel, blocos e alvos
 venv/bin/python -m experiments.02_build_datasets # atributos e splits → data/processed/
+venv/bin/python -m experiments.03_eda_atributos # EDA dos atributos: descritivas, correlação e outliers
 venv/bin/python -m experiments.04_multiclasse   # clássicos + MLP: classe do animal (~2 + 2 min)
 venv/bin/python -m experiments.05_binario       # clássicos + MLP: hotspot por segmento × mês (~4 + 6 min)
 venv/bin/python -m experiments.06_regressao     # clássicos + MLP: n por segmento × mês (~5 + 5 min)
 venv/bin/python -m experiments.07_optuna        # Optuna na MLP: 80 trials por problema e retreino da melhor (~40 min)
 venv/bin/python -m experiments.08_regularizacao # regularização: 5 configurações × 5 sementes por problema (~8 min)
+venv/bin/python -m experiments.09_desbalanceamento # classificação sem e com pesos de classe (~2 min)
 ```
 
 Os scripts `04`–`06` aceitam `--modelos classicos`, `--modelos mlp` ou `--modelos todos` (padrão). Com `mlp`, só a rede é treinada e as linhas dos clássicos em `outputs/tables/resultados.csv` são preservadas.

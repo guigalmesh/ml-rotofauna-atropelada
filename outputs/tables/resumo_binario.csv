@@ -1,6 +1,7 @@
 conjunto_atributos,modelo,aleatorio,espacial,temporal
 base,hgb,0.786 ± 0.006,0.668 ± 0.080,0.753
 base,logistica,0.752 ± 0.004,0.655 ± 0.041,0.735
+base,mlp,0.767 ± 0.007,0.669 ± 0.055,0.723 ± 0.005
 base,prevalencia,0.500 ± 0.000,0.500 ± 0.000,0.500
 base,random_forest,0.787 ± 0.007,0.693 ± 0.063,0.752
 base+clima,hgb,0.786 ± 0.008,0.677 ± 0.065,0.757
@@ -18,5 +19,8 @@ base+via,random_forest,0.789 ± 0.009,0.690 ± 0.072,0.755
 completo,hgb,0.787 ± 0.009,0.689 ± 0.069,0.762
 completo,historico_segmento,0.735 ± 0.018,0.500 ± 0.000,0.714
 completo,logistica,0.771 ± 0.010,0.702 ± 0.084,0.744
+completo,mlp,0.780 ± 0.006,0.663 ± 0.071,0.746 ± 0.004
+completo,mlp_optuna,0.772 ± 0.007,0.656 ± 0.073,0.744 ± 0.002
+completo,mlp_sem_scaler,,0.498 ± 0.062,0.511 ± 0.011
 completo,prevalencia,0.500 ± 0.000,0.500 ± 0.000,0.500
 completo,random_forest,0.790 ± 0.009,0.730 ± 0.051,0.757
