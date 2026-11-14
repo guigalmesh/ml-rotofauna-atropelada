@@ -1,6 +1,6 @@
 # RodoFauna: predição de atropelamento de fauna
 
-> 🚧 **Projeto em desenvolvimento.** Limpeza, EDA, dados externos, datasets de modelagem, os modelos clássicos, a MLP, a otimização de hiperparâmetros com Optuna e o estudo de regularização e o mapa de hotspots previstos estão implementados. Falta o relatório, e a estrutura, os scripts e os resultados podem mudar sem aviso.
+> Pipeline completo: limpeza, EDA, dados externos, datasets de modelagem, modelos clássicos, MLP, otimização de hiperparâmetros com Optuna, estudo de regularização e mapa de hotspots previstos.
 
 Pipeline de aprendizado de máquina para estudar atropelamentos de fauna silvestre em rodovias do Distrito Federal. Os registros de campo vêm do monitoramento RodoFauna (IBRAM) e são combinados com dados abertos de vias (OpenStreetMap), clima (INMET e NASA POWER), relevo (SRTM) e cobertura do solo (MapBiomas).
 
@@ -26,7 +26,7 @@ Os três problemas planejados são:
 | Estudo de regularização e overfitting da MLP (`08_regularizacao`) | ✅ pronta |
 | Impacto do desbalanceamento: sem e com pesos de classe (`09_desbalanceamento`) | ✅ pronta |
 | Hotspots previstos no período de teste: captura e mapa (`10_hotspots`) | ✅ pronta |
-| Relatório | ⏳ a fazer |
+| Relatório técnico | ✅ pronto |
 
 ## Ambiente
 
