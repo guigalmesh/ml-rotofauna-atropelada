@@ -33,3 +33,6 @@ outputs/*.db
 # Notas de trabalho (ficam só local)
 JOURNAL.md
 Plano do pipeline RodoFauna.md
+
+# Relatório em LaTeX (fica só local até a entrega)
+relatorio/

@@ -31,8 +31,10 @@ def run_classicos(df, y, ctx):
         metric_fn=lambda yt, yp, pr: regression_metrics(yt, yp), keep_predictions=('temporal', 'teste'))
     rows += segment_history_baseline(df, y, ctx, PROBLEMA)
     results = save_results(rows, PROBLEMA)
+    # Só os clássicos: a tabela não muda se a MLP já estiver em resultados.csv (a MLP entra no comparativo)
+    classicos = results[~results['modelo'].str.startswith('mlp')]
     for metrica in ['desvio_poisson', 'rmse', 'mae', 'r2']:
-        resumo = summarize(results, PROBLEMA, metrica)
+        resumo = summarize(classicos, PROBLEMA, metrica)
         resumo.to_csv(config.TABLES_DIR / f'resumo_{PROBLEMA}_{metrica}.csv')
         if metrica in ('desvio_poisson', 'rmse'):
             print(f"\n{metrica} (média ± desvio entre folds):\n{resumo.to_string()}")

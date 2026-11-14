@@ -51,10 +51,12 @@ def run_classicos(df, y, ctx):
         metric_fn=classification_metrics, keep_predictions=('temporal', 'teste'))
     rows += segment_history_baseline(df, y, ctx, PROBLEMA)
     results = save_results(rows, PROBLEMA)
-    resumo = summarize(results, PROBLEMA, MAIN_METRIC[PROBLEMA])
+    # Só os clássicos: a tabela não muda se a MLP já estiver em resultados.csv (a MLP entra no comparativo)
+    classicos = results[~results['modelo'].str.startswith('mlp')]
+    resumo = summarize(classicos, PROBLEMA, MAIN_METRIC[PROBLEMA])
     resumo.to_csv(config.TABLES_DIR / f'resumo_{PROBLEMA}.csv')
     print(f"\nROC-AUC (média ± desvio entre folds):\n{resumo.to_string()}")
-    resumo_f1 = summarize(results, PROBLEMA, 'f1_positivo')
+    resumo_f1 = summarize(classicos, PROBLEMA, 'f1_positivo')
     print(f"\nF1 da classe positiva:\n{resumo_f1[resumo_f1.index.get_level_values(0) == 'completo'].to_string()}")
 
     ganho = ablation_table(results, PROBLEMA, MAIN_METRIC[PROBLEMA])

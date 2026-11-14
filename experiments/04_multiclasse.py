@@ -31,7 +31,9 @@ def run_classicos(df, y, ctx):
         df, y, PROBLEMA, DATASET, classical_models(PROBLEMA), list(config.ABLATION_SETS), config.SPLITS, ctx,
         metric_fn=lambda yt, yp, pr: classification_metrics(yt, yp), keep_predictions=('temporal', 'teste'))
     results = save_results(rows, PROBLEMA)
-    resumo = summarize(results, PROBLEMA, MAIN_METRIC[PROBLEMA])
+    # Só os clássicos: a tabela não muda se a MLP já estiver em resultados.csv (a MLP entra no comparativo)
+    classicos = results[~results['modelo'].str.startswith('mlp')]
+    resumo = summarize(classicos, PROBLEMA, MAIN_METRIC[PROBLEMA])
     resumo.to_csv(config.TABLES_DIR / f'resumo_{PROBLEMA}.csv')
     print(f"\nF1 macro (média ± desvio entre folds):\n{resumo.to_string()}")
 

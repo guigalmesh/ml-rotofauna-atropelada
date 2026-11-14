@@ -191,3 +191,10 @@ REG_CONFIGS = {
     'D. L2 1e-3': dict(hidden=(128, 64), dropout=0.0, weight_decay=1e-3, early_stopping=True),
     'E. Rede menor (32)': dict(hidden=(32,), dropout=0.0, weight_decay=0.0, early_stopping=True),
 }
+
+# =============================================================================
+# HOTSPOTS PREVISTOS (Etapa 9)
+# =============================================================================
+HOTSPOT_FIG_DIR = FIGURES_DIR / 'hotspots'
+HOTSPOT_TOP_FRACTIONS = [0.1, 0.2, 0.3]   # fração inspecionada nas tabelas de captura
+HOTSPOT_MAP_FRACTION = 0.2                # segmentos destacados no mapa
